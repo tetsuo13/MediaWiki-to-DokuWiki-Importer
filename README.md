@@ -5,6 +5,8 @@ Import MediaWiki into DokuWiki. Will also translate from MediaWiki syntax to
 DokuWiki as best as it can (not all modifiers from MediaWiki are available in
 DokuWiki).
 
+Tested against MediaWiki 1.16.1 and DokuWiki 2011-05-25a "Rincewind".
+
 Project is unfinished. Only processes pages and not images.
 
 Requirements
