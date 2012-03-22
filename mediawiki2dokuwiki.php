@@ -117,6 +117,8 @@ function convert(PDO $db, array $mwikiDb) {
  * @param array $record Info on page.
  */
 function processPage(array $record) {
+    global $lang;
+    
     file_put_contents('mediawiki', $record['old_text']);
     exec('./' . MW2DW_SYNTAX_CONVERTER . ' mediawiki');
 
@@ -127,7 +129,7 @@ function processPage(array $record) {
 
     saveWikiText($record['page_title'],
                  con('', file_get_contents(MW2DW_SYNTAX_OUTPUT), ''),
-                 'created');
+                 $lang['created']);
 
     unlink(MW2DW_SYNTAX_OUTPUT);
 }
