@@ -173,7 +173,7 @@ cat mediawiki10 \
 
 # Images / Files
 cat mediawiki11 \
-   | sed -r "s/\[\[(Bild|Image|Datei|File):([^\|\S]*)\|?\S*\]\]/{{:wiki:\2}}/g" \
+   | sed -r "s/\[\[([bB]ild|[iI]mage|[dD]atei|[fF]ile):([^\|\S]*)\|?\S*\]\]/{{:wiki:\2}}/g" \
   > mediawiki12
 
 cat mediawiki11 > dokuwiki
