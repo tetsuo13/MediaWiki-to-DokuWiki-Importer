@@ -147,7 +147,7 @@ function processImage(array $record, array $lang) {
     $dir2 = substr($md5_filename, 0, 2);
     # File path
     $src_file_path = realpath(dirname($_SERVER['argv'][1]). DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $dir1 . DIRECTORY_SEPARATOR . $dir2 . DIRECTORY_SEPARATOR . $record['page_title']);
-    $dst_file_path = dirname(__FILE__). DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'wiki' . DIRECTORY_SEPARATOR . strtolower($record['page_title']);
+    $dst_file_path = dirname(__FILE__). DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'mediawiki' . DIRECTORY_SEPARATOR . strtolower($record['page_title']);
     
     if (!is_dir(dirname($dst_file_path))) {
         mkdir(dirname($dst_file_path));
