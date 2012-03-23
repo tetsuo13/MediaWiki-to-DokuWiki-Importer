@@ -141,7 +141,27 @@ function processPage(array $record, array $lang) {
  * @param array $lang   DokuWiki language
  */
 function processImage(array $record, array $lang) {
-    echo 'Skipping.';
+    # Hashed Upload Directory
+    $md5_filename = md5($record['page_title']);
+    $dir1 = substr($md5_filename, 0, 1);
+    $dir2 = substr($md5_filename, 0, 2);
+    # File path
+    $src_file_path = realpath(dirname($_SERVER['argv'][1]). DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $dir1 . DIRECTORY_SEPARATOR . $dir2 . DIRECTORY_SEPARATOR . $record['page_title']);
+    $dst_file_path = dirname(__FILE__). DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'wiki' . DIRECTORY_SEPARATOR . strtolower($record['page_title']);
+    
+    if (!is_dir(dirname($dst_file_path))) {
+        mkdir(dirname($dst_file_path));
+    }
+    
+    if (file_exists($dst_file_path)) {
+        echo 'File already exists. Skipping.';
+        return;
+    }
+    
+    if (!copy($src_file_path, $dst_file_path)) {
+        echo 'Error while copying. Skipping.';
+        return;
+    }
 }
 
 /**
