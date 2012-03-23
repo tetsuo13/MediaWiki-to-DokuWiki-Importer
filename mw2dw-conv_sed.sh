@@ -171,5 +171,10 @@ cat mediawiki10 \
    | sed -r "s/\*\*\/\//\/\/\*\*/g" \
   > mediawiki11
 
+# Images / Files
+cat mediawiki11 \
+   | sed -r "s/\[\[([mM][eE][dD][iI][aA]|[bB][iI][lL][dD]|[iI][mM][aA][gG][eE]|[dD][aA][tT][eE][iI]|[fF][iI][lL][eE]):([^\|\S]*)\|?\S*\]\]/{{mediawiki:\2}}/g" \
+  > mediawiki12
+
 cat mediawiki11 > dokuwiki
-rm -f mediawiki mediawiki0 mediawiki1 mediawiki2 mediawiki3 mediawiki4 mediawiki5 mediawiki6 mediawiki7 mediawiki8 mediawiki9 mediawiki10 mediawiki11
+rm -f mediawiki mediawiki0 mediawiki1 mediawiki2 mediawiki3 mediawiki4 mediawiki5 mediawiki6 mediawiki7 mediawiki8 mediawiki9 mediawiki10 mediawiki11 mediawiki12

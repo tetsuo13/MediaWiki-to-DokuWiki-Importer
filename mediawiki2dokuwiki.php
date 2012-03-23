@@ -62,15 +62,16 @@ if (count($mwikiDb) != 8) {
 
 $db = dbConnect($mwikiDb);
 
-convert($db, $mwikiDb);
+convert($db, $mwikiDb, $lang);
 
 /**
  * Convert pages from MediaWiki.
  *
  * @param PDO   $db      DB handle.
  * @param array $mwikiDb DB attributes.
+ * @param array $lang    DokuWiki language
  */
-function convert(PDO $db, array $mwikiDb) {
+function convert(PDO $db, array $mwikiDb, array $lang) {
     $prefix = $mwikiDb['wgDBprefix'];
 
     $sql = "SELECT      p.page_title, p.page_namespace, t.old_text
@@ -93,11 +94,11 @@ function convert(PDO $db, array $mwikiDb) {
 
             switch ($row['page_namespace']) {
                 case 0:
-                    processPage($row);
+                    processPage($row, $lang);
                     break;
 
                 case 6:
-                    processImage($row);
+                    processImage($row, $lang);
                     break;
 
                 default:
@@ -115,8 +116,9 @@ function convert(PDO $db, array $mwikiDb) {
  * Inject new page into DokuWiki.
  *
  * @param array $record Info on page.
+ * @param array $lang   DokuWiki language
  */
-function processPage(array $record) {
+function processPage(array $record, array $lang) {
     file_put_contents('mediawiki', $record['old_text']);
     exec('./' . MW2DW_SYNTAX_CONVERTER . ' mediawiki');
 
@@ -127,7 +129,7 @@ function processPage(array $record) {
 
     saveWikiText($record['page_title'],
                  con('', file_get_contents(MW2DW_SYNTAX_OUTPUT), ''),
-                 'created');
+                 $lang['created']);
 
     unlink(MW2DW_SYNTAX_OUTPUT);
 }
@@ -136,9 +138,30 @@ function processPage(array $record) {
  * Inject image.
  *
  * @param array $record Info on page.
+ * @param array $lang   DokuWiki language
  */
-function processImage(array $record) {
-    echo 'Skipping.';
+function processImage(array $record, array $lang) {
+    # Hashed Upload Directory
+    $md5_filename = md5($record['page_title']);
+    $dir1 = substr($md5_filename, 0, 1);
+    $dir2 = substr($md5_filename, 0, 2);
+    # File path
+    $src_file_path = realpath(dirname($_SERVER['argv'][1]). DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $dir1 . DIRECTORY_SEPARATOR . $dir2 . DIRECTORY_SEPARATOR . $record['page_title']);
+    $dst_file_path = dirname(__FILE__). DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'mediawiki' . DIRECTORY_SEPARATOR . strtolower($record['page_title']);
+    
+    if (!is_dir(dirname($dst_file_path))) {
+        mkdir(dirname($dst_file_path));
+    }
+    
+    if (file_exists($dst_file_path)) {
+        echo 'File already exists. Skipping.';
+        return;
+    }
+    
+    if (!copy($src_file_path, $dst_file_path)) {
+        echo 'Error while copying. Skipping.';
+        return;
+    }
 }
 
 /**
