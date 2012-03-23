@@ -62,15 +62,16 @@ if (count($mwikiDb) != 8) {
 
 $db = dbConnect($mwikiDb);
 
-convert($db, $mwikiDb);
+convert($db, $mwikiDb, $lang);
 
 /**
  * Convert pages from MediaWiki.
  *
  * @param PDO   $db      DB handle.
  * @param array $mwikiDb DB attributes.
+ * @param array $lang    DokuWiki language
  */
-function convert(PDO $db, array $mwikiDb) {
+function convert(PDO $db, array $mwikiDb, array $lang) {
     $prefix = $mwikiDb['wgDBprefix'];
 
     $sql = "SELECT      p.page_title, p.page_namespace, t.old_text
@@ -93,11 +94,11 @@ function convert(PDO $db, array $mwikiDb) {
 
             switch ($row['page_namespace']) {
                 case 0:
-                    processPage($row);
+                    processPage($row, $lang);
                     break;
 
                 case 6:
-                    processImage($row);
+                    processImage($row, $lang);
                     break;
 
                 default:
@@ -115,10 +116,9 @@ function convert(PDO $db, array $mwikiDb) {
  * Inject new page into DokuWiki.
  *
  * @param array $record Info on page.
+ * @param array $lang   DokuWiki language
  */
-function processPage(array $record) {
-    global $lang;
-    
+function processPage(array $record, array $lang) {
     file_put_contents('mediawiki', $record['old_text']);
     exec('./' . MW2DW_SYNTAX_CONVERTER . ' mediawiki');
 
@@ -138,8 +138,9 @@ function processPage(array $record) {
  * Inject image.
  *
  * @param array $record Info on page.
+ * @param array $lang   DokuWiki language
  */
-function processImage(array $record) {
+function processImage(array $record, array $lang) {
     echo 'Skipping.';
 }
 
