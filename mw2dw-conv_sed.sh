@@ -173,7 +173,7 @@ cat mediawiki10 \
 
 # Images / Files
 cat mediawiki11 \
-   | sed -r "s/\[\[([mM][eE][dD][iI][aA]|[bB][iI][lL][dD]|[iI][mM][aA][gG][eE]|[dD][aA][tT][eE][iI]|[fF][iI][lL][eE]):([^\|\S]*)\|?\S*\]\]/{{mediawiki:\2}}/g" \
+   | sed -r "s/\[\[([mM][eE][dD][iI][aA]|[mM][eE][dD][iI][uU][mM]|[bB][iI][lL][dD]|[iI][mM][aA][gG][eE]|[dD][aA][tT][eE][iI]|[fF][iI][lL][eE]):([^\|\S]*)\|?\S*\]\]/{{mediawiki:\2}}/g" \
   > mediawiki12
 
 cat mediawiki11 > dokuwiki
