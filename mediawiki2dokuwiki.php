@@ -32,10 +32,10 @@ define('MW2DW_SYNTAX_CONVERTER', 'mw2dw-conv_sed.sh');
 define('MW2DW_SYNTAX_OUTPUT', 'dokuwiki');
 
 // Path to root DokuWiki install. Required by include files.
-define('DOKU_INC', dirname(__FILE__) . '/');
+define('DOKU_INC', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 
-require_once DOKU_INC . 'inc/init.php';
-require_once DOKU_INC . 'inc/common.php';
+require_once DOKU_INC . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
+require_once DOKU_INC . 'inc' . DIRECTORY_SEPARATOR . 'common.php';
 
 if (!isset($_SERVER['argv'], $_SERVER['argc']) || $_SERVER['argc'] != 2) {
     exit('Path to LocalSettings.php missing');
@@ -148,16 +148,16 @@ function processImage(array $record, array $lang) {
     # File path
     $src_file_path = realpath(dirname($_SERVER['argv'][1]). DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $dir1 . DIRECTORY_SEPARATOR . $dir2 . DIRECTORY_SEPARATOR . $record['page_title']);
     $dst_file_path = dirname(__FILE__). DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'mediawiki' . DIRECTORY_SEPARATOR . strtolower($record['page_title']);
-    
+
     if (!is_dir(dirname($dst_file_path))) {
         mkdir(dirname($dst_file_path));
     }
-    
+
     if (file_exists($dst_file_path)) {
         echo 'File already exists. Skipping.';
         return;
     }
-    
+
     if (!copy($src_file_path, $dst_file_path)) {
         echo 'Error while copying. Skipping.';
         return;
