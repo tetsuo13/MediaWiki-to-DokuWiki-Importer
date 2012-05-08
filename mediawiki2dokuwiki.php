@@ -3,7 +3,7 @@
 /**
  * MediaWiki2DokuWiki. Imports a MediaWiki install into DokuWiki.
  *
- * Copyright (C) 2011 Andrei Nicholson
+ * Copyright (C) 2011-2012 Andrei Nicholson
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,11 +25,7 @@
 ini_set('display_errors', '1');
 error_reporting(E_ALL | E_STRICT);
 
-// Path to MediaWiki to DokuWiki syntax converter shell script.
-define('MW2DW_SYNTAX_CONVERTER', 'mw2dw-conv_sed.sh');
-
-// {@link MW2DW_SYNTAX_CONVERTER} will generate this file.
-define('MW2DW_SYNTAX_OUTPUT', 'dokuwiki');
+require_once 'convertSyntax.php';
 
 // Path to root DokuWiki install. Required by include files.
 define('DOKU_INC', dirname(__FILE__) . DIRECTORY_SEPARATOR);
@@ -39,10 +35,6 @@ require_once DOKU_INC . 'inc' . DIRECTORY_SEPARATOR . 'common.php';
 
 if (!isset($_SERVER['argv'], $_SERVER['argc']) || $_SERVER['argc'] != 2) {
     exit('Path to LocalSettings.php missing');
-}
-
-if (!file_exists(MW2DW_SYNTAX_CONVERTER)) {
-    exit('Missing syntax converter shell script ' . MW2DW_SYNTAX_CONVERTER);
 }
 
 $mwikiSettingsPath = realpath($_SERVER['argv'][1]);
@@ -119,19 +111,10 @@ function convert(PDO $db, array $mwikiDb, array $lang) {
  * @param array $lang   DokuWiki language
  */
 function processPage(array $record, array $lang) {
-    file_put_contents('mediawiki', $record['old_text']);
-    exec('./' . MW2DW_SYNTAX_CONVERTER . ' mediawiki');
+    $converter = new mediaWikiConverter($record['old_text']);
 
-    if (!file_exists(MW2DW_SYNTAX_OUTPUT)) {
-        echo 'Error converting syntax. Skipping.';
-        return;
-    }
-
-    saveWikiText($record['page_title'],
-                 con('', file_get_contents(MW2DW_SYNTAX_OUTPUT), ''),
+    saveWikiText($record['page_title'], con('', $converter->convert(), ''),
                  $lang['created']);
-
-    unlink(MW2DW_SYNTAX_OUTPUT);
 }
 
 /**

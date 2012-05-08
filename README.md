@@ -22,7 +22,7 @@ Requirements
 Usage
 -----
 
-Copy both mediawiki2dokuwiki.php and mw2dw-conv_sed.sh into the base DokuWiki
+Copy both mediawiki2dokuwiki.php and convertSyntax.php into the base DokuWiki
 directory. Execute mediawiki2dokuwiki.php along with the path to
 LocalSettings.php, either as an absolute or relative path.
 
