@@ -25,6 +25,20 @@
 ini_set('display_errors', '1');
 error_reporting(E_ALL | E_STRICT);
 
+define('IN_CLI_MODE', (PHP_SAPI == 'cli' || isset($_SERVER['SHELL'])));
+
+if (!IN_CLI_MODE) {
+    echo <<<HTML
+<!DOCTYPE html>
+<html>
+<head>
+<title>MediaWiki to DokuWiki Converter</title>
+<style>body { font-family: arial; }</style>
+</head>
+<body>
+HTML;
+}
+
 require_once 'convertSyntax.php';
 
 // Path to root DokuWiki install. Required by include files.
@@ -33,14 +47,12 @@ define('DOKU_INC', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 require_once DOKU_INC . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 require_once DOKU_INC . 'inc' . DIRECTORY_SEPARATOR . 'common.php';
 
-if (!isset($_SERVER['argv'], $_SERVER['argc']) || $_SERVER['argc'] != 2) {
-    exit('Path to LocalSettings.php missing');
-}
-
-$mwikiSettingsPath = realpath($_SERVER['argv'][1]);
-
-if (!file_exists($mwikiSettingsPath)) {
-    exit("Path to LocalSettings.php, $mwikiSettingsPath, is invalid");
+try {
+    $mwikiSettingsPath = getLocalSettingsPath();
+} catch (RuntimeException $e) {
+    out('Error: ' . $e->getMessage());
+    usage();
+    exit(1);
 }
 
 $mwikiSettings = file($mwikiSettingsPath,
@@ -49,12 +61,20 @@ $mwikiSettings = file($mwikiSettingsPath,
 $mwikiDb = dbConnectionSettings($mwikiSettings);
 
 if (count($mwikiDb) != 8) {
-    exit('Something went wrong with scraping LocalSettings.php for DB info');
+    out('Error: Something went wrong with scraping LocalSettings.php for DB info');
+    exit(1);
 }
 
 $db = dbConnect($mwikiDb);
 
 convert($db, $mwikiDb, $lang);
+
+if (!IN_CLI_MODE) {
+    echo <<<HTML
+</body>
+</html>
+HTML;
+}
 
 /**
  * Convert pages from MediaWiki.
@@ -78,11 +98,12 @@ function convert(PDO $db, array $mwikiDb, array $lang) {
 
         if (!$statement->execute()) {
             $error = $statement->errorInfo();
-            exit('Could not fetch MediaWiki: ' . $error[2]);
+            out('Could not fetch MediaWiki: ' . $error[2]);
+            exit(1);
         }
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            echo 'Processing ' . $row['page_title'] . '... ';
+            out('Processing ' . $row['page_title'] . '... ');
 
             switch ($row['page_namespace']) {
                 case 0:
@@ -94,13 +115,14 @@ function convert(PDO $db, array $mwikiDb, array $lang) {
                     break;
 
                 default:
-                    echo 'Unknown type. Skipping.';
+                    out('Unknown type. Skipping.');
             }
 
-            echo PHP_EOL;
+            out(PHP_EOL);
         }
     } catch (PDOException $e) {
-        exit('Could not select all pages: ' . $e->getMessage());
+        out('Error: Could not select all pages: ' . $e->getMessage());
+        exit(1);
     }
 }
 
@@ -137,12 +159,12 @@ function processImage(array $record, array $lang) {
     }
 
     if (file_exists($dst_file_path)) {
-        echo 'File already exists. Skipping.';
+        out('File already exists. Skipping.');
         return;
     }
 
     if (!copy($src_file_path, $dst_file_path)) {
-        echo 'Error while copying. Skipping.';
+        out('Error while copying. Skipping.');
         return;
     }
 }
@@ -161,7 +183,8 @@ function dbConnect(array $mwikiDb) {
     try {
         $db = new PDO($dsn, $mwikiDb['wgDBuser'], $mwikiDb['wgDBpassword']);
     } catch (PDOException $e) {
-        exit('DB connection failed: ' . $e->getMessage());
+        out('DB connection failed: ' . $e->getMessage());
+        exit(1);
     }
     return $db;
 }
@@ -194,4 +217,76 @@ function dbConnectionSettings(array $mwikiSettings) {
     }
 
     return $db;
+}
+
+/**
+ * Context-aware output.
+ *
+ * @param message Message to output.
+ */
+function out($message) {
+    if (IN_CLI_MODE) {
+        echo $message;
+        return;
+    }
+    echo "<p>$message</p>";
+}
+
+/**
+ * Finds path to LocalSettings.php from environment.
+ *
+ * @return string Absolute path to LocalSettings.php.
+ */
+function getLocalSettingsPath() {
+    if (!IN_CLI_MODE) {
+        if (!isset($_GET['settings_file'])) {
+            throw new RuntimeException('Missing GET argument "settings_file".');
+        }
+        $settingsPath = $_GET['settings_file'];
+    } else {
+        if (!isset($_SERVER['argv'], $_SERVER['argc']) || $_SERVER['argc'] != 2) {
+            throw new RuntimeException('Path to LocalSettings.php missing.');
+        }
+        $settingsPath = $_SERVER['argv'][1];
+    }
+
+    $realSettingsPath = realpath($settingsPath);
+
+    if ($realSettingsPath === FALSE) {
+        throw new RuntimeException("Invalid path to LocalSettings.php: $settingsPath.");
+    }
+
+    if (!file_exists($realSettingsPath) || is_dir($realSettingsPath)) {
+        throw new RuntimeException("LocalSettings.php at '$settingsPath' cannot be found.");
+    }
+
+    // Can't rename MediaWiki settings file otherwise MediaWiki won't work, so
+    // path must have the string.
+    if (strpos($settingsPath, 'LocalSettings.php') === FALSE) {
+        throw new RuntimeException("$settingsPath is not LocalSettings.php.");
+    }
+
+    return $settingsPath;
+}
+
+/**
+ * Display usage info.
+ */
+function usage() {
+    if (IN_CLI_MODE) {
+        echo PHP_EOL . PHP_EOL .
+             'usage: ' . basename(__FILE__) . ' <path to LocalSettings.php>' .
+             PHP_EOL . PHP_EOL;
+        return;
+    }
+
+    echo <<<HTML
+<h3>Usage</h3>
+<p>Use GET argument "settings_file" with the path to
+    <code>LocalSettings.php</code>, either relative to this script or an
+    absolute path.</p>
+<p>Example:
+    <blockquote><code>{$_SERVER['PHP_SELF']}?settings_file=../mediawiki/LocalSettings.php</code></blockquote>
+</p>
+HTML;
 }

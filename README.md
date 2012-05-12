@@ -23,7 +23,15 @@ Usage
 -----
 
 Copy both mediawiki2dokuwiki.php and convertSyntax.php into the base DokuWiki
-directory. Execute mediawiki2dokuwiki.php along with the path to
-LocalSettings.php, either as an absolute or relative path.
+directory. Execute mediawiki2dokuwiki.php from either the command line or from
+a web browser.
+
+If using the command line, execute mediawiki2dokuwiki.php along with the path
+to LocalSettings.php, either as an absolute or relative path.
 
     $ ./mediawiki2dokuwiki.php <path to LocalSettings.php>
+
+Otherwise if using a web browser, call mediawiki2dokuwiki.php with the
+argument "settings_file" set to the path to LocalSettings.php.
+
+    /mediawiki2dokuwiki.php?settings_file=<path to LocalSettings.php>
