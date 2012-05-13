@@ -22,9 +22,8 @@ Requirements
 Usage
 -----
 
-Copy both mediawiki2dokuwiki.php and convertSyntax.php into the base DokuWiki
-directory. Execute mediawiki2dokuwiki.php from either the command line or from
-a web browser.
+Copy everything in the src directory into the base DokuWiki directory. Execute
+mediawiki2dokuwiki.php from either the command line or from a web browser.
 
 If using the command line, execute mediawiki2dokuwiki.php along with the path
 to LocalSettings.php, either as an absolute or relative path.
