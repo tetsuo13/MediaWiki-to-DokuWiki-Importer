@@ -41,12 +41,19 @@ class mediaWikiConverter {
     /** Original MediaWiki record. */
     private $record = '';
 
+    /** Stored code blocks to prevent further conversions. */
+    private $codeBlock = array();
+
+    /** What string should never occur in user content? */
+    private $placeholder = '';
+
     /**
      * Constructor.
      *
      * @param string $record MediaWiki record.
      */
     public function __construct($record) {
+        $this->placeholder = '@@' . __CLASS__ . '_';
         $this->record = $record;
     }
 
@@ -67,6 +74,10 @@ class mediaWikiConverter {
         $record = $this->convertTalks($record);
         $record = $this->convertImagesFiles($record);
 
+        if (count($this->codeBlock) > 0) {
+            $record = $this->replaceStoredCodeBlocks($record);
+        }
+
         return $record;
     }
 
@@ -79,10 +90,6 @@ class mediaWikiConverter {
      */
     private function convertCodeBlocks($record) {
         $patterns = array(
-                          // Replace ALL **... strings (not at beginning of
-                          // line)
-                          '/([^^][^\*]*)(\*\*+)/' => '\1<nowiki>\2<\/nowiki>',
-
                           // Also replace ALL //... strings
                           '/([^\/]*)(\/\/+)/' => '\1<nowiki>\2<\/nowiki>',
 
@@ -93,11 +100,44 @@ class mediaWikiConverter {
                           '/([\[][^\[]*)(<nowiki>)(\/\/+)(<\/nowiki>)([^\]]*)/' => '\1\3\5',
                           '/([\[][^\[]*)(<nowiki>)(\/\/+)(<\/nowiki>)([^\]]*)/' => '\1\3\5',
 
-                          '/<pre>(.*?)?<\/pre>/'      => '<code>\1</code>',
-                          '/<\code>\n[ \t]*\n<code>/' => '');
+                          '@<pre>(.*?)?</pre>@es'     => '$this->storeCodeBlock(\'\1\')',
+                          '@</code>\n[ \t]*\n<code>@' => '');
 
         return preg_replace(array_keys($patterns), array_values($patterns),
                             $record);
+    }
+
+    /**
+     * Replace content in PRE tag with placeholder. This is done so no more
+     * conversions are performed with the contents. The last this this class
+     * will do is replace those placeholders with their original content.
+     *
+     * @param string $code Contents of PRE tag.
+     *
+     * @return string CODE tag with placeholder in content.
+     */
+    private function storeCodeBlock($code) {
+        $this->codeBlock[] = $code;
+
+        $replace = $this->placeholder . (count($this->codeBlock) - 1) . '@@';
+
+        return "<code>$replace</code>";
+    }
+
+    /**
+     * Replace PRE tag placeholders back with their original content.
+     *
+     * @param string $record Converted record.
+     *
+     * @return string Record with placeholders removed.
+     */
+    private function replaceStoredCodeBlocks($record) {
+        for ($i = 0, $numBlocks = count($this->codeBlock); $i < $numBlocks; $i++) {
+            $record = preg_replace('/' . $this->placeholder . $i . '@@/',
+                                   $this->codeBlock[$i],
+                                   $record);
+        }
+        return $record;
     }
 
     /**
@@ -190,16 +230,14 @@ class mediaWikiConverter {
      * @return string
      */
     private function convertList($record) {
-        $patterns = array('/^[*#][*#][*#][*#]\*/' => '          * ',
-                          '/^[*#][*#][*#]\*/'     => '        * ',
-                          '/^[*#][*#]\*/'         => '      * ',
-                          '/^[*#]\*/'             => '    * ',
-                          '/^\*/'                 => '  * ',
-                          '/^[*#][*#][*#][*#]#/'  => '          - ',
-                          '/^[*#][*#][*#]#/'      => '        - ',
-                          '/^[*#][*#]#/'          => '      - ',
-                          '/^[*#]#/'              => '    - ',
-                          '/^#/'                  => '  - ');
+        $patterns = array('/^\* /m'    => '  * ',
+                          '/^\*{2} /m' => '    * ',
+                          '/^\*{3} /m' => '      * ',
+                          '/^\*{4} /m' => '        * ',
+                          '/^# /m'     => '  - ',
+                          '/^#{2} /m'  => '    - ',
+                          '/^#{3} /m'  => '      - ',
+                          '/^#{4} /m'  => '        - ');
 
         return preg_replace(array_keys($patterns), array_values($patterns),
                             $record);
