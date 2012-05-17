@@ -133,9 +133,9 @@ class mediaWikiConverter {
      */
     private function replaceStoredCodeBlocks($record) {
         for ($i = 0, $numBlocks = count($this->codeBlock); $i < $numBlocks; $i++) {
-            $record = preg_replace('/' . $this->placeholder . $i . '@@/',
-                                   $this->codeBlock[$i],
-                                   $record);
+            $record = str_replace($this->placeholder . $i . '@@',
+                                  $this->codeBlock[$i],
+                                  $record);
         }
         return $record;
     }
