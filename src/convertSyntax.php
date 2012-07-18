@@ -109,7 +109,7 @@ class mediaWikiConverter {
 
     /**
      * Replace content in PRE tag with placeholder. This is done so no more
-     * conversions are performed with the contents. The last this this class
+     * conversions are performed with the contents. The last thing this class
      * will do is replace those placeholders with their original content.
      *
      * @param string $code Contents of PRE tag.
