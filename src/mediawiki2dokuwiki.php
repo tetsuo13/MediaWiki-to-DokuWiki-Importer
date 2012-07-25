@@ -103,6 +103,11 @@ function convert(PDO $db, array $mwikiDb, array $lang) {
         }
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+	    if (!ini_get('safe_mode')){
+                set_time_limit(0);
+            }
+
+
             out('Processing ' . $row['page_title'] . '... ');
 
             switch ($row['page_namespace']) {
