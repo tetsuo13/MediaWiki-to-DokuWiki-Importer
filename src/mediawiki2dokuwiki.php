@@ -39,6 +39,16 @@ if (!IN_CLI_MODE) {
 HTML;
 }
 
+if (!ini_get('safe_mode')) {
+    // If not running in CLI mode then the web server will impose its own
+    // maximum execution time limit, but that's usually higher than PHP's
+    // default.
+    set_time_limit(0);
+} else {
+    out('Cannot change execution time limit in safe mode. ' .
+        'Using default of ' . ini_get('max_execution_time') . ' seconds.');
+}
+
 require_once 'convertSyntax.php';
 
 // Path to root DokuWiki install. Required by include files.
