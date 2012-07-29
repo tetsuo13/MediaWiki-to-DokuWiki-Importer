@@ -244,33 +244,40 @@ class mediaWikiConverter {
     }
 
     /**
-     * Convert headings.
+     * Convert headings. Syntax between MediaWiki and DokuWiki is completely
+     * opposite: the largest heading in MediaWiki is two equal marks while in
+     * DokuWiki it's six equal marks. This creates a problem since the first
+     * replaced string of two marks will be caught by the last search string
+     * also of two marks, resulting in eight total equal marks.
      *
      * @param string $record
      *
      * @return string
      */
     private function convertHeadings($record) {
-        $patterns = array('/^[ ]*=([^=])/'      => '<h1> \1',
-                          '/([^=])=[ ]*$/'      => '\1 <\/h1>',
-                          '/^[ ]*==([^=])/'     => '<h2> \1',
-                          '/([^=])==[ ]*$/'     => '\1 <\/h2>',
-                          '/^[ ]*===([^=])/'    => '<h3> \1',
-                          '/([^=])===[ ]*$/'    => '\1 <\/h3>',
-                          '/^[ ]*====([^=])/'   => '<h4> \1',
-                          '/([^=])====[ ]*$/'   => '\1 <\/h4>',
-                          '/^[ ]*=====([^=])/'  => '<h5> \1',
-                          '/([^=])=====[ ]*$/'  => '\1 <\/h5>',
-                          '/^[ ]*======([^=])/' => '<h6> \1',
-                          '/([^=])======[ ]*$/' => '\1 <\/h6>',
-                          '/<\/?h1>/'           => '======',
-                          '/<\/?h2>/'           => '=====',
-                          '/<\/?h3>/'           => '====',
-                          '/<\/?h4>/'           => '===',
-                          '/<\/?h5>/'           => '==',
-                          '/<\/?h6>/'           => '=');
+        $patterns = array('/^======(.+)======\s*$/m' => '==\1==',
+                          '/^=====(.+)=====\s*$/m'   => '===\1===',
+                          '/^====(.+)====\s*$/m'     => '====\1====',
+                          '/^===(.+)===\s*$/m'       => '=====\1=====',
+                          '/^==(.+)==\s*$/m'         => '======\1======');
 
-        return preg_replace(array_keys($patterns), array_values($patterns),
-                            $record);
+        // Insert a unique string to the replacement so that it won't be
+        // caught in a search later.
+        // @todo A lambda function can be used when PHP 5.4 is required.
+        array_walk($patterns,
+                   create_function('&$v, $k',
+                                   '$v = "' . $this->placeholder . '" . $v;'));
+
+        $convertedRecord = preg_replace(array_keys($patterns),
+                                        array_values($patterns), $record);
+
+        // No headings were found.
+        if ($convertedRecord == $record) {
+            return $record;
+        }
+
+        // Strip out the unique strings.
+        return preg_replace('/^' . $this->placeholder . '(={2,6})/', '\1',
+                            $convertedRecord);
     }
 }

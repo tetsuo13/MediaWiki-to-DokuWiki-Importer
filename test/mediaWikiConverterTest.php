@@ -21,7 +21,8 @@
  * @since  2012-05-12
  */
 
-require_once '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR .
+require_once '..' . DIRECTORY_SEPARATOR .
+             'src' . DIRECTORY_SEPARATOR .
              'convertSyntax.php';
 
 /**
@@ -105,7 +106,23 @@ class mediaWikiConverterTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($expected, $this->convert($actual));
     }
 
+    /**
+     */
     public function testConvertHeadings() {
-        $this->markTestIncomplete();
+        // DokuWiki to MediaWiki.
+        $tests = array('====== Headline 1 ======' => '== Headline 1 ==',
+                       '======Headline 1======'   => '==Headline 1==',
+                       '===== Headline 2 ====='   => '=== Headline 2 ===',
+                       '=====Headline 2====='     => '===Headline 2===',
+                       '==== Headline 3 ===='     => '==== Headline 3 ====',
+                       '====Headline 3===='       => '====Headline 3====',
+                       '=== Headline 4 ==='       => '===== Headline 4 =====',
+                       '===Headline 4==='         => '=====Headline 4=====',
+                       '== Headline 5 =='         => '====== Headline 5 ======',
+                       '==Headline 5=='           => '======Headline 5======');
+
+        foreach ($tests as $dokuWiki => $mediaWiki) {
+            $this->assertEquals($dokuWiki, $this->convert($mediaWiki));
+        }
     }
 }
