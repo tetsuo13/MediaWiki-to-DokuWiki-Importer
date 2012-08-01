@@ -143,7 +143,8 @@ function convert(PDO $db, array $mwikiDb, array $lang) {
  * @param array $lang   DokuWiki language
  */
 function processPage(array $record, array $lang) {
-    $converter = new mediaWikiConverter($record['old_text']);
+    $converter = '====== ' . $record['page_title'] . ' ======'
+               . new mediaWikiConverter($record['old_text']);
 
     saveWikiText($record['page_title'], con('', $converter->convert(), ''),
                  $lang['created']);
