@@ -256,10 +256,10 @@ class mediaWikiConverter {
      */
     private function convertHeadings($record) {
         $patterns = array('/^======(.+)======\s*$/m' => '==\1==',
-                          '/^=====(.+)=====\s*$/m'   => '===\1===',
-                          '/^====(.+)====\s*$/m'     => '====\1====',
-                          '/^===(.+)===\s*$/m'       => '=====\1=====',
-                          '/^==(.+)==\s*$/m'         => '======\1======');
+                          '/^=====(.+)=====\s*$/m'   => '==\1==',
+                          '/^====(.+)====\s*$/m'     => '===\1===',
+                          '/^===(.+)===\s*$/m'       => '====\1====',
+                          '/^==(.+)==\s*$/m'         => '=====\1=====');
 
         // Insert a unique string to the replacement so that it won't be
         // caught in a search later.
@@ -277,7 +277,6 @@ class mediaWikiConverter {
         }
 
         // Strip out the unique strings.
-        return preg_replace('/^' . $this->placeholder . '(={2,6})/', '\1',
-                            $convertedRecord);
+        return str_replace($this->placeholder, '', $convertedRecord);
     }
 }
