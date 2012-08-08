@@ -277,7 +277,6 @@ class mediaWikiConverter {
         }
 
         // Strip out the unique strings.
-        return preg_replace('/^' . $this->placeholder . '(={2,6})/', '\1',
-                            $convertedRecord);
+        return str_replace($this->placeholder, '', $convertedRecord);
     }
 }
