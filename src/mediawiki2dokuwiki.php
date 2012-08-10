@@ -57,16 +57,16 @@ define('DOKU_INC', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 require_once DOKU_INC . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 require_once DOKU_INC . 'inc' . DIRECTORY_SEPARATOR . 'common.php';
 
+// Define Root-Directory of Mediawiki-Installation
 try {
-    $mwikiSettingsPath = getLocalSettingsPath();
+    define ('MWIKI_ROOT', getLocalSettingsPath());
 } catch (RuntimeException $e) {
     out('Error: ' . $e->getMessage());
     usage();
     exit(1);
 }
 
-$mwikiSettings = file($mwikiSettingsPath,
-                      FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$mwikiSettings = file(MWIKI_ROOT, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
 $mwikiDb = dbConnectionSettings($mwikiSettings);
 
@@ -159,8 +159,9 @@ function processImage(array $record, array $lang) {
     $md5_filename = md5($record['page_title']);
     $dir1 = substr($md5_filename, 0, 1);
     $dir2 = substr($md5_filename, 0, 2);
+	
     # File path
-    $src_file_path = realpath(dirname($_SERVER['argv'][1]). DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $dir1 . DIRECTORY_SEPARATOR . $dir2 . DIRECTORY_SEPARATOR . $record['page_title']);
+	$src_file_path = realpath(dirname(MWIKI_ROOT) . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $dir1 .DIRECTORY_SEPARATOR .$dir2. DIRECTORY_SEPARATOR .$record['page_title']);
     $dst_file_path = dirname(__FILE__). DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'mediawiki' . DIRECTORY_SEPARATOR . strtolower($record['page_title']);
 
     if (!is_dir(dirname($dst_file_path))) {
