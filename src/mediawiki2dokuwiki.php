@@ -56,6 +56,7 @@ define('DOKU_INC', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 
 require_once DOKU_INC . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 require_once DOKU_INC . 'inc' . DIRECTORY_SEPARATOR . 'common.php';
+require_once DOKU_INC . 'inc' . DIRECTORY_SEPARATOR . 'pageutils.php';
 
 // Define Root-Directory of Mediawiki-Installation
 try {
@@ -162,7 +163,7 @@ function processImage(array $record, array $lang) {
 	
     # File path
 	$src_file_path = realpath(dirname(MWIKI_ROOT) . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $dir1 .DIRECTORY_SEPARATOR .$dir2. DIRECTORY_SEPARATOR .$record['page_title']);
-    $dst_file_path = dirname(__FILE__). DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'mediawiki' . DIRECTORY_SEPARATOR . strtolower($record['page_title']);
+    $dst_file_path = dirname(__FILE__). DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'mediawiki' . DIRECTORY_SEPARATOR . cleanID($record['page_title']));
 
     if (!is_dir(dirname($dst_file_path))) {
         mkdir(dirname($dst_file_path));
