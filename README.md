@@ -14,23 +14,31 @@ Tested against:
 Requirements
 ------------
 
-* Physical access to the MediaWiki and DokuWiki install on server.
+* Physical access to the MediaWiki and DokuWiki installation on server.
 * Read access to MediaWiki's LocalSettings.php script.
 * PHP 5.1.0 or greater.
-* PDO extension with MySQL/PostgreSQL binding -- whatever DB type MediaWiki is using.
+* PDO extension with MySQL/PostgreSQL binding -- whatever DB type MediaWiki is
+using.
 
 Usage
 -----
 
-Copy everything in the src directory into the base DokuWiki directory. Execute
-mediawiki2dokuwiki.php from either the command line or from a web browser.
+Can be run either through a web server or from the command line, if you have
+SSH access to the server. For large MediaWiki installations the command line
+is preferred as the web server may terminate the process due to maximum
+execution time limits, if safe mode is enabled and cannot be disabled.
 
-If using the command line, execute mediawiki2dokuwiki.php along with the path
-to LocalSettings.php, either as an absolute or relative path.
+Copy the ``src`` directory either in a temporary location if you will be using
+the command line or in a web accessible location otherwise.
 
-    $ ./mediawiki2dokuwiki.php <path to LocalSettings.php>
+Copy ``settings.php.dist`` to ``settings.php`` and edit the contents to
+provide the path to the source MediaWiki and target DokuWiki installations.
 
-Otherwise if using a web browser, call mediawiki2dokuwiki.php with the
-argument "settings_file" set to the path to LocalSettings.php.
+Whether you will be using the command line or a web server, the target file
+to be called is the same. If using the command line:
 
-    /mediawiki2dokuwiki.php?settings_file=<path to LocalSettings.php>
+    $ php index.php
+
+If using a web server:
+
+    /index.php

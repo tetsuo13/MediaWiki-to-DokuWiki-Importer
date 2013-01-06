@@ -1,40 +1,24 @@
 <?php
 /**
- * {@link mediaWikiConverter} unit tests.
- *
- * Copyright (C) 2012 Andrei Nicholson
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * {@link MediaWiki2DokuWiki_MediaWiki_SyntaxConverter} unit tests.
  *
  * @author Andrei Nicholson
  * @since  2012-05-12
  */
 
-require_once '..' . DIRECTORY_SEPARATOR .
-             'src' . DIRECTORY_SEPARATOR .
-             'convertSyntax.php';
-
 /**
  * Tests {@link mediaWikiConverter}.
  */
-class mediaWikiConverterTest extends PHPUnit_Framework_TestCase {
-    private function convert($record) {
-        $converter = new mediaWikiConverter($record);
+class MediaWikiSyntaxConverterTest extends PHPUnit_Framework_TestCase
+{
+    private function convert($record)
+    {
+        $converter = new MediaWiki2DokuWiki_MediaWiki_SyntaxConverter($record);
         return $converter->convert();
     }
 
-    public function testConvertCodeBlocks() {
+    public function testConvertCodeBlocks()
+    {
         $actual = "''Italic text outside of PRE.''
 
 <pre>
@@ -55,32 +39,41 @@ class mediaWikiConverterTest extends PHPUnit_Framework_TestCase {
 #### RULES ####
 </code>';
 
-        $this->assertEquals($expected, $this->convert($actual),
-                            'Code within PRE tags should not be converted');
+        $this->assertEquals(
+            $expected,
+            $this->convert($actual),
+            'Code within PRE tags should not be converted'
+        );
     }
 
-    public function testConvertImageFiles() {
+    public function testConvertImageFiles()
+    {
         $this->markTestIncomplete();
     }
 
-    public function testConvertTalks() {
+    public function testConvertTalks()
+    {
         $this->markTestIncomplete();
     }
 
-    public function testConvertBoldItalic() {
+    public function testConvertBoldItalic()
+    {
         $this->assertEquals('//Italic//', $this->convert("''Italic''"));
         $this->assertEquals('**Bold**', $this->convert("'''Bold'''"));
     }
 
-    public function testConvertLink() {
+    public function testConvertLink()
+    {
         $this->markTestIncomplete();
     }
 
-    public function testConvertUrlText() {
+    public function testConvertUrlText()
+    {
         $this->markTestIncomplete();
     }
 
-    public function testConvertList() {
+    public function testConvertList()
+    {
         $expected = '  * This is a list
   * The second item
     * You may have different levels
@@ -108,7 +101,8 @@ class mediaWikiConverterTest extends PHPUnit_Framework_TestCase {
 
     /**
      */
-    public function testConvertHeadings() {
+    public function testConvertHeadings()
+    {
         // DokuWiki to MediaWiki.
         $tests = array('====== Headline 1 ======' => '== Headline 1 ==',
                        '======Headline 1======'   => '==Headline 1==',
@@ -126,3 +120,4 @@ class mediaWikiConverterTest extends PHPUnit_Framework_TestCase {
         }
     }
 }
+
