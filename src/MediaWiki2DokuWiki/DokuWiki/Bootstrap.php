@@ -42,17 +42,35 @@ class MediaWiki2DokuWiki_DokuWiki_Bootstrap
      */
     public function __construct($dokuInc)
     {
+        global $lang;
+
         // Path to root DokuWiki install. Required by include files.
         define('DOKU_INC', $dokuInc . DIRECTORY_SEPARATOR);
 
-        //set_include_path(get_include_path() . PATH_SEPARATOR . DOKU_INC);
-
-        $files = array('init.php', /*'common.php'*/);
+        $files = array('init.php');
 
         foreach ($files as $file) {
             require DOKU_INC . "inc/$file";
         }
 
+        $this->setupLanguage($lang);
+    }
+
+    /**
+     * Assign the global $lang variable as attribute.
+     *
+     * 2012-10-13 "Adora Belle" only assigned a value to this variable in
+     * the init_lang() function. It assumes a global variable.
+     *
+     * @param array $lang Global variable from init.php. May be null in
+     *                    later versions of DokuWiki.
+     */
+    private function setupLanguage($lang)
+    {
+        if (function_exists('init_lang')) {
+            require DOKU_CONF . 'dokuwiki.php';
+            init_lang($conf['lang']);
+        }
         $this->lang = $lang;
     }
 }
