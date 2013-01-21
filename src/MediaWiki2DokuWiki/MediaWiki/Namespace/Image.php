@@ -49,8 +49,9 @@ class MediaWiki2DokuWiki_MediaWiki_Namespace_Image extends MediaWiki2DokuWiki_Me
 
         $srcFilePath = realpath("{$this->mediaWikiDir}/images/$dir1/$dir2/{$record['page_title']}");
 
-        $dstFilePath = realpath("{$this->dokuWikiDir}/data/media/wiki");
-        $dstFilePath .= '/' . strtolower($record['page_title']);
+        // From inc/pageutils.php
+        $dstFilePath = realpath("{$this->dokuWikiDir}/data/media/wiki")
+                     . '/' . cleanID($record['page_title']);
 
         if ($srcFilePath === false) {
             MediaWiki2DokuWiki_Environment::out(

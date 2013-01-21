@@ -33,12 +33,18 @@ class MediaWiki2DokuWiki_DokuWiki_Bootstrap
     /**
      * Language array.
      */
-    public $lang;
+    public $lang = array();
+
+    /**
+     * Configuration array.
+     */
+    public $conf = array();
 
     /**
      * Constructor.
      *
      * @param string $dokuInc Path to the base directory of DokuWiki.
+     * @global array Language array declared in inc/init.php.
      */
     public function __construct($dokuInc)
     {
@@ -52,6 +58,9 @@ class MediaWiki2DokuWiki_DokuWiki_Bootstrap
         foreach ($files as $file) {
             require DOKU_INC . "inc/$file";
         }
+
+        require DOKU_CONF . 'dokuwiki.php';
+        $this->conf = $conf;
 
         $this->setupLanguage($lang);
     }
@@ -68,8 +77,7 @@ class MediaWiki2DokuWiki_DokuWiki_Bootstrap
     private function setupLanguage($lang)
     {
         if (function_exists('init_lang')) {
-            require DOKU_CONF . 'dokuwiki.php';
-            init_lang($conf['lang']);
+            init_lang($this->conf['lang']);
         }
         $this->lang = $lang;
     }
