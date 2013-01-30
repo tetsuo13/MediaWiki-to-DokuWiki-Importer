@@ -67,7 +67,34 @@ class MediaWikiSyntaxConverterTest extends PHPUnit_Framework_TestCase
 
     public function testConvertImageFiles()
     {
-        $this->markTestIncomplete();
+        $this->assertEquals(
+            '{{wiki:example.jpg}}',
+            $this->convert('[[File:example.jpg]]')
+        );
+        $this->assertEquals(
+            '{{wiki:example.jpg?50}}',
+            $this->convert('[[File:example.jpg|50px]]')
+        );
+        $this->assertEquals(
+            '{{wiki:dokuwiki-128.png?200x50}}',
+            $this->convert('[[File:dokuwiki-128.png|200x50px]]')
+        );
+        $this->assertEquals(
+            '{{ wiki:dokuwiki-128.png}}',
+            $this->convert('[[File:dokuwiki-128.png|left]]')
+        );
+        $this->assertEquals(
+            '{{ wiki:dokuwiki-128.png }}',
+            $this->convert('[[File:dokuwiki-128.png|center]]')
+        );
+        $this->assertEquals(
+            '{{ wiki:dokuwiki-128.png |This is the caption}}',
+            $this->convert('[[File:dokuwiki-128.png|center|This is the caption]]')
+        );
+        $this->assertEquals(
+            '[[http://www.php.net|{{wiki:dokuwiki-128.png}}]]',
+            $this->convert('[[File:dokuwiki-128.png|link=http://www.php.net]]')
+        );
     }
 
     public function testConvertTalks()

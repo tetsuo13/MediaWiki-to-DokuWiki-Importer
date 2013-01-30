@@ -100,9 +100,6 @@ class MediaWiki2DokuWiki_MediaWiki_SyntaxConverter
     private function convertCodeBlocks($record)
     {
         $patterns = array(
-            // Also replace ALL //... strings
-            '/([^\/]*)(\/\/+)/' => '\1<nowiki>\2<\/nowiki>',
-
             // Change the ones that have been replaced in a link [] BACK to
             // normal (do it twice in case
             // [http://addres.com http://address.com] ) [quick and dirty]
@@ -160,21 +157,105 @@ class MediaWiki2DokuWiki_MediaWiki_SyntaxConverter
     /**
      * Convert images and files.
      *
-     * @param string $record
+     * @param string $record Converted record.
      *
      * @return string
      */
     private function convertImagesFiles($record)
     {
-        $patterns = array(
-            '/\[\[([media]|[medium]|[bild]|[image]|[datei]|[file]):([^\|\S]*)\|?\S*\]\]/i' => '{{mediawiki:\2}}'
+        $numMatches = preg_match_all(
+            '/\[\[(Image|File):(.*?)\]\]/',
+            $record,
+            $matches
         );
 
-        return preg_replace(
-            array_keys($patterns),
-            array_values($patterns),
-            $record
-        );
+        if ($numMatches === 0 || $numMatches === false) {
+            return $record;
+        }
+
+        for ($i = 0; $i < $numMatches; $i++) {
+            $converted = $this->convertImage($matches[2][$i]);
+
+            // Replace the full tag, [[File:example.jpg|options|caption]],
+            // with the DokuWiki equivalent.
+            $record = str_replace($matches[0][$i], $converted, $record);
+        }
+
+        return $record;
+    }
+
+    /**
+     * Process a MediaWiki image tag.
+     *
+     * @param string $detail Filename and options, ie.
+     *                       example.jpg|options|caption.
+     *
+     * @return string DokuWiki version of tag.
+     */
+    private function convertImage($detail)
+    {
+        $parts = explode('|', $detail);
+        $numParts = count($parts);
+
+        // Image link.
+        if ($numParts == 2 && substr($parts[1], 0, 5) == 'link=') {
+            return '[[' . substr($parts[1], 5) . '|{{wiki:' . $parts[0] . '}}]]';
+        }
+
+        $converted = '{{';
+        $leftAlign = '';
+        $rightAlign = '';
+        $imageSize = '';
+        $caption = '';
+
+        if ($numParts > 1) {
+            $imageFilename = array_shift($parts);
+
+            foreach ($parts as $part) {
+                if ($part == 'left') {
+                    $leftAlign = ' ';
+                    continue;
+                } else if ($part == 'right') {
+                    $rightAlign = ' ';
+                    continue;
+                } else if ($part == 'center') {
+                    $leftAlign = $rightAlign = ' ';
+                    continue;
+                }
+
+                if (substr($part, -2) == 'px') {
+                    preg_match('/((\d+)x)?(\d+)px/', $part, $matches);
+
+                    if (count($matches) > 0) {
+                        if ($matches[1] == '') {
+                            $imageSize = $matches[3];
+                        } else {
+                            $imageSize = $matches[2] . 'x' . $matches[3];
+                        }
+                    }
+
+                    continue;
+                }
+
+                $caption = $part;
+            }
+
+            $converted .= $leftAlign . 'wiki:' . $imageFilename . $rightAlign;
+
+            if ($imageSize != '') {
+                $converted .= '?' . $imageSize;
+            }
+
+            if ($caption != '') {
+                $converted .= '|' . $caption;
+            }
+        } else {
+            $converted .= "wiki:$detail";
+        }
+
+        $converted .= '}}';
+
+        return $converted;
     }
 
     /**
