@@ -122,12 +122,20 @@ class MediaWiki2DokuWiki_MediaWiki_Settings
      */
     public function dbConnect()
     {
-        $dsn = $this->settings['wgDBtype'] . ':'
-             . 'dbname=' . $this->settings['wgDBname'] . ';'
-             . 'host=' . $this->settings['wgDBserver'];
+        $dsn = array(
+            $this->settings['wgDBtype'] . ':dbname=' . $this->settings['wgDBname']
+        );
+
+        $mysqlSocket = ini_get('mysql.default_socket');
+
+        if (!empty($mysqlSocket)) {
+            $dsn[] = 'unix_socket=' . $mysqlSocket;
+        } else {
+            $dsn[] = 'host=' . $this->settings['wgDBserver'];
+        }
 
         return new PDO(
-            $dsn,
+            implode(';', $dsn),
             $this->settings['wgDBuser'],
             $this->settings['wgDBpassword']
         );
