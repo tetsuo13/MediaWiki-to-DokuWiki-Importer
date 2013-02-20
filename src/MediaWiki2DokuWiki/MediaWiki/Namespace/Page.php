@@ -33,7 +33,7 @@ class MediaWiki2DokuWiki_MediaWiki_Namespace_Page extends MediaWiki2DokuWiki_Med
     /**
      * Namespace ID in MediaWiki.
      */
-    const NAMESPACE = 0;
+    const NAME_SPACE = 0;
 
     /**
      * Inject new page into DokuWiki.

@@ -100,7 +100,7 @@ class MediaWiki2DokuWiki_MediaWiki_Converter
                 );
 
                 switch ($row['page_namespace']) {
-                    case MediaWiki2DokuWiki_MediaWiki_Namespace_Page::NAMESPACE:
+                    case MediaWiki2DokuWiki_MediaWiki_Namespace_Page::NAME_SPACE:
                         $page = new MediaWiki2DokuWiki_MediaWiki_Namespace_Page(
                             $this->dokuWikiDir,
                             $this->mediaWikiDir,
@@ -109,7 +109,7 @@ class MediaWiki2DokuWiki_MediaWiki_Converter
                         $page->process($row);
                         break;
 
-                    case MediaWiki2DokuWiki_MediaWiki_Namespace_Image::NAMESPACE:
+                    case MediaWiki2DokuWiki_MediaWiki_Namespace_Image::NAME_SPACE:
                         $image = new MediaWiki2DokuWiki_MediaWiki_Namespace_Image(
                             $this->dokuWikiDir,
                             $this->mediaWikiDir,

@@ -33,7 +33,7 @@ class MediaWiki2DokuWiki_MediaWiki_Namespace_Image extends MediaWiki2DokuWiki_Me
     /**
      * Namespace ID in MediaWiki.
      */
-    const NAMESPACE = 6;
+    const NAME_SPACE = 6;
 
     /**
      * Inject image.
