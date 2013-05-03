@@ -63,6 +63,20 @@ class MediaWikiSyntaxConverterTest extends PHPUnit_Framework_TestCase
             $this->convert($actual),
             'Code within PRE tags should not be converted'
         );
+
+        $actual = '<pre>
+http://server/file/default/path/a/b/c
+</pre>';
+
+        $expected = '<code>
+http://server/file/default/path/a/b/c
+</code>';
+
+        $this->assertEquals(
+            $expected,
+            $this->convert($actual),
+            'Links within PRE tags should not be converted'
+        );
     }
 
     public function testConvertImageFiles()

@@ -79,6 +79,7 @@ class MediaWiki2DokuWiki_MediaWiki_SyntaxConverter
         $record = $this->convertList($record);
         $record = $this->convertUrlText($record);
         $record = $this->convertLink($record);
+        $record = $this->convertDoubleSlash($record);
         $record = $this->convertBoldItalic($record);
         $record = $this->convertTalks($record);
         $record = $this->convertImagesFiles($record);
@@ -88,6 +89,27 @@ class MediaWiki2DokuWiki_MediaWiki_SyntaxConverter
         }
 
         return $record;
+    }
+
+    /**
+     * Double forward slashes are not italic. There is no double slash syntax
+     * rule in MediaWiki. This conversion must happen before the conversion of
+     * italic markup.
+     *
+     * @param string $record
+     *
+     * @return string
+     */
+    private function convertDoubleSlash($record)
+    {
+        $patterns = array(
+            '/([^:])\/\//m' => '\1<nowiki>//</nowiki>',
+        );
+        return preg_replace(
+            array_keys($patterns),
+            array_values($patterns),
+            $record
+        );
     }
 
     /**
