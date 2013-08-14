@@ -179,5 +179,27 @@ http://server/file/default/path/a/b/c
             $this->assertEquals($dokuWiki, $this->convert($mediaWiki));
         }
     }
+
+    /**
+     * Some HTML tags are allowed and shouldn't be changed.
+     */
+    public function testHtmlTags()
+    {
+        $actual = 'In a <code>code block</code>';
+        $expected = 'In a <code>code block</code>';
+        $this->assertEquals(
+            $expected,
+            $this->convert($actual),
+            'CODE tags are allowed in MediWiki'
+        );
+
+        $actual = 'In a <div>div tag</div>';
+        $expected = 'In a <div>div tag</div>';
+        $this->assertEquals(
+            $expected,
+            $this->convert($actual),
+            'DIV tags are allowed in MediWiki'
+        );
+    }
 }
 
