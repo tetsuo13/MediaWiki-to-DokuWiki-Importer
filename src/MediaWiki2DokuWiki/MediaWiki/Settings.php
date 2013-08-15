@@ -83,6 +83,54 @@ class MediaWiki2DokuWiki_MediaWiki_Settings
     }
 
     /**
+     * Does a string start with one of a collection of needles. Needles are
+     * any of the specific variables expected for {@link $settings}.
+     *
+     * @param string $line
+     *
+     * @return boolean
+     */
+    private function startsWithKey($line)
+    {
+        $needles = array(
+            '$wgDBtype',
+            '$wgDBserver',
+            '$wgDBname',
+            '$wgDBuser',
+            '$wgDBpassword'
+        );
+
+        foreach ($needles as $needle) {
+            if (!strncmp($line, $needle, strlen($needle))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Find string value assigned to variable.
+     *
+     * @param array $tokens Result from token_get_all() on a line.
+     *
+     * @return string
+     */
+    private function getValue(array $tokens)
+    {
+        foreach ($tokens as $token) {
+            if (!is_array($token) || $token[0] != T_CONSTANT_ENCAPSED_STRING) {
+                continue;
+            }
+
+            // Strip quotes.
+            return substr($token[1], 1, -1);
+        }
+
+        throw new Exception('Value not found');
+    }
+
+    /**
      * Convert variables to keys and values.
      *
      * @param array $settings Content of LocalSettings.php with each line as
@@ -99,28 +147,31 @@ class MediaWiki2DokuWiki_MediaWiki_Settings
                 continue;
             }
 
-            $x = explode('=', $line, 2);
-
-            if (!is_array($x) || count($x) != 2) {
+            if (!$this->startsWithKey($line)) {
                 continue;
             }
 
-            $val = trim($x[1]);
+            $tokens = token_get_all("<?php $line ?>");
 
-            // Strip leading dollar sign from key. Strip leading quote,
-            // trailing quote and semicolon from value.
-            $settingsParsed[substr(trim($x[0]), 1)] = substr($val, 1, -2);
+            if ($tokens[1][0] != T_VARIABLE) {
+                continue;
+            }
+
+            // Get variable name without dollar sign.
+            $key = substr($tokens[1][1], 1);
+            $value = $this->getValue($tokens);
+            $settingsParsed[$key] = $value;
         }
 
         return $settingsParsed;
     }
 
     /**
-     * Connect to the DB and return handle.
+     * Generate DSN.
      *
-     * @return PDO DB handle.
+     * @return string
      */
-    public function dbConnect()
+    private function generateDsn()
     {
         $dsn = array(
             $this->settings['wgDBtype'] . ':dbname=' . $this->settings['wgDBname']
@@ -134,8 +185,18 @@ class MediaWiki2DokuWiki_MediaWiki_Settings
             $dsn[] = 'host=' . $this->settings['wgDBserver'];
         }
 
+        return implode(';', $dsn);
+    }
+
+    /**
+     * Connect to the DB and return handle.
+     *
+     * @return PDO DB handle.
+     */
+    public function dbConnect()
+    {
         return new PDO(
-            implode(';', $dsn),
+            generateDsn(),
             $this->settings['wgDBuser'],
             $this->settings['wgDBpassword']
         );
