@@ -28,7 +28,7 @@
  * @author Andrei Nicholson
  * @since  2012-05-12
  */
-class MediaWikiSyntaxConverterTest extends PHPUnit_Framework_TestCase
+class MediaWiki2DokuWiki_MediaWiki_SyntaxConverterTest extends PHPUnit_Framework_TestCase
 {
     private function convert($record)
     {
