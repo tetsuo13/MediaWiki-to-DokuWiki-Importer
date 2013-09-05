@@ -196,7 +196,7 @@ class MediaWiki2DokuWiki_MediaWiki_Settings
     public function dbConnect()
     {
         return new PDO(
-            generateDsn(),
+            $this->generateDsn(),
             $this->settings['wgDBuser'],
             $this->settings['wgDBpassword']
         );
