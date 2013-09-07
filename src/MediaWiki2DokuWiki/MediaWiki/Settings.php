@@ -97,7 +97,8 @@ class MediaWiki2DokuWiki_MediaWiki_Settings
             '$wgDBserver',
             '$wgDBname',
             '$wgDBuser',
-            '$wgDBpassword'
+            '$wgDBpassword',
+            '$wgDBprefix'
         );
 
         foreach ($needles as $needle) {

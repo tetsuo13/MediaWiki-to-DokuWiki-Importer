@@ -64,7 +64,8 @@ $wgDBtype           = "mysql";
 $wgDBserver         = "localhost";
 $wgDBname           = "my_dbname";
 $wgDBuser           = "my_dbuser";
-$wgDBpassword       = "abceasyas123";');
+$wgDBpassword       = "abceasyas123";
+$wgDBprefix         = "mwiki_";');
 
         $settings = new MediaWiki2DokuWiki_MediaWiki_Settings($this->testFile);
 
@@ -73,6 +74,7 @@ $wgDBpassword       = "abceasyas123";');
         $this->assertEquals('my_dbname', $settings->getSetting('wgDBname'));
         $this->assertEquals('my_dbuser', $settings->getSetting('wgDBuser'));
         $this->assertEquals('abceasyas123', $settings->getSetting('wgDBpassword'));
+        $this->assertEquals('mwiki_', $settings->getSetting('wgDBprefix'));
     }
 
     public function testEmptyFile()
@@ -94,7 +96,8 @@ $wgDBtype = "mysql"; #mysql
 $wgDBserver = "localhost"; #localhost
 $wgDBname = "my_wp"; #my_wp
 $wgDBuser = "my_wp"; #my_wp
-$wgDBpassword = "Q?u>U(]\c;e+~e0l|;g~df<}byG/hJ?\'iL.!7HO7s\"+"; #Q?u>U(]\c;e+~e0l|;g~df<}byG/hJ?\'iL.!7HO7s+');
+$wgDBpassword = "Q?u>U(]\c;e+~e0l|;g~df<}byG/hJ?\'iL.!7HO7s\"+"; #Q?u>U(]\c;e+~e0l|;g~df<}byG/hJ?\'iL.!7HO7s+
+$wgDBprefix = "foo_"; #foo_');
 
         $settings = new MediaWiki2DokuWiki_MediaWiki_Settings($this->testFile);
 
@@ -103,6 +106,7 @@ $wgDBpassword = "Q?u>U(]\c;e+~e0l|;g~df<}byG/hJ?\'iL.!7HO7s\"+"; #Q?u>U(]\c;e+~e
         $this->assertEquals('my_wp', $settings->getSetting('wgDBname'));
         $this->assertEquals('my_wp', $settings->getSetting('wgDBuser'));
         $this->assertEquals('Q?u>U(]\c;e+~e0l|;g~df<}byG/hJ?\'iL.!7HO7s\"+', $settings->getSetting('wgDBpassword'));
+        $this->assertEquals('foo_', $settings->getSetting('wgDBprefix'));
     }
 }
 
