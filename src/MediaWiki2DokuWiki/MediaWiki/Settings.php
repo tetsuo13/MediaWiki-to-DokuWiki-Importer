@@ -196,11 +196,17 @@ class MediaWiki2DokuWiki_MediaWiki_Settings
      */
     public function dbConnect()
     {
-        return new PDO(
+        $db = new PDO(
             $this->generateDsn(),
             $this->settings['wgDBuser'],
             $this->settings['wgDBpassword']
         );
+
+        // Force encoding just in case the character set of the server isn't
+        // already UTF-8. Both MediaWiki and DokuWiki use UTF-8.
+        $db->exec('SET NAMES utf8');
+
+        return $db;
     }
 
     /**

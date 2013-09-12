@@ -167,9 +167,10 @@ class MediaWiki2DokuWiki_Environment
     private function headerOutput()
     {
         $message = <<<EOT
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
+<meta charset="utf-8" />
 <title>MediaWiki to DokuWiki Converter</title>
 <style>body { font-family: arial; }</style>
 </head>
