@@ -33,6 +33,7 @@ the command line or in a web accessible location otherwise.
 
 Copy ``settings.php.dist`` to ``settings.php`` and edit the contents to
 provide the path to the source MediaWiki and target DokuWiki installations.
+Even if running from a web server, the paths cannot be URLs.
 
 Whether you will be using the command line or a web server, the target file
 to be called is the same. If using the command line:
@@ -42,3 +43,4 @@ to be called is the same. If using the command line:
 If using a web server:
 
     /index.php
+
