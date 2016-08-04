@@ -1,6 +1,8 @@
 MediaWiki2DokuWiki
 ==================
 
+[![Build Status](https://api.travis-ci.org/tetsuo13/MediaWiki-to-DokuWiki-Importer.svg)](https://travis-ci.org/tetsuo13/MediaWiki-to-DokuWiki-Importer)
+
 Import MediaWiki into DokuWiki. Will also translate from MediaWiki syntax to
 DokuWiki as best as it can (not all modifiers from MediaWiki are available in
 DokuWiki). It processes pages and images/files.
