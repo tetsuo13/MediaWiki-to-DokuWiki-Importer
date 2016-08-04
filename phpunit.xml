@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="src/MediaWiki2DokuWiki/autoload.php"
+<phpunit bootstrap="test/bootstrap.php"
          colors="true">
     <testsuites>
         <testsuite name="MediaWiki2DokuWiki Test Suite">
