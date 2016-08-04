@@ -128,14 +128,19 @@ class MediaWiki2DokuWiki_MediaWiki_SyntaxConverter
             '/([\[][^\[]*)(<nowiki>)(\/\/+)(<\/nowiki>)([^\]]*)/' => '\1\3\5',
             '/([\[][^\[]*)(<nowiki>)(\/\/+)(<\/nowiki>)([^\]]*)/' => '\1\3\5',
 
-            '@<pre>(.*?)?</pre>@es'     => '$this->storeCodeBlock(\'\1\')',
             '@</code>\n[ \t]*\n<code>@' => ''
         );
 
-        return preg_replace(
+        $result = preg_replace(
             array_keys($patterns),
             array_values($patterns),
             $record
+        );
+
+        return preg_replace_callback(
+            '@<pre>(.*?)?</pre>@s',
+            array($this, 'storeCodeBlock'),
+            $result
         );
     }
 
@@ -144,13 +149,13 @@ class MediaWiki2DokuWiki_MediaWiki_SyntaxConverter
      * conversions are performed with the contents. The last thing this class
      * will do is replace those placeholders with their original content.
      *
-     * @param string $code Contents of PRE tag.
+     * @param string[] $matches Contents of PRE tag in second element.
      *
      * @return string CODE tag with placeholder in content.
      */
     private function storeCodeBlock($code)
     {
-        $this->codeBlock[] = $code;
+        $this->codeBlock[] = $code[1];
 
         $replace = $this->placeholder . (count($this->codeBlock) - 1) . '@@';
 
