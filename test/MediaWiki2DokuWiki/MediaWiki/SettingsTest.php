@@ -31,7 +31,7 @@
  * @author Andrei Nicholson
  * @since  2013-08-13
  */
-class MediaWiki2DokuWiki_MediaWiki_SettingsTest extends PHPUnit_Framework_TestCase
+class MediaWiki2DokuWiki_MediaWiki_SettingsTest extends MediaWiki2DokuWiki_MediaWiki_TestCase
 {
     private $testFile = '';
 

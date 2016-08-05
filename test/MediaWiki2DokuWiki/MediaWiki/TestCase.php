@@ -25,8 +25,14 @@
 /**
  * Base unit test class helper.
  */
-class MediaWiki2DokuWiki_MediaWiki_TestCase extends PHPUnit_Framework_TestCase
+abstract class MediaWiki2DokuWiki_MediaWiki_TestCase extends PHPUnit_Framework_TestCase
 {
+    /**
+     * Convert MediaWiki block of text to DokuWiki syntax.
+     *
+     * @param string $record MediaWiki syntax.
+     * @return string
+     */
     protected function convert($record)
     {
         $converter = new MediaWiki2DokuWiki_MediaWiki_SyntaxConverter($record);
