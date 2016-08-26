@@ -53,7 +53,7 @@ class MediaWiki2DokuWiki_DokuWiki_Bootstrap
         // Path to root DokuWiki install. Required by include files.
         define('DOKU_INC', $dokuInc . DIRECTORY_SEPARATOR);
 
-        $files = array('init.php');
+        $files = array('init.php', 'common.php');
 
         foreach ($files as $file) {
             require DOKU_INC . "inc/$file";

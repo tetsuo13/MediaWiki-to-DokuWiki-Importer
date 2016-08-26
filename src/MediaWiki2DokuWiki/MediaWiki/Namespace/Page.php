@@ -1,5 +1,4 @@
 <?php
-require_once(DOKU_INC . "inc/common.php");
 /**
  * MediaWiki2DokuWiki importer.
  * Copyright (C) 2011-2013  Andrei Nicholson
