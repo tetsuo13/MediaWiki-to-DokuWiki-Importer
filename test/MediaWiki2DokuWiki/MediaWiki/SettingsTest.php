@@ -108,5 +108,156 @@ $wgDBprefix = "foo_"; #foo_');
         $this->assertEquals('Q?u>U(]\c;e+~e0l|;g~df<}byG/hJ?\'iL.!7HO7s\"+', $settings->getSetting('wgDBpassword'));
         $this->assertEquals('foo_', $settings->getSetting('wgDBprefix'));
     }
+
+    public function testMissingOptionalDbPrefix()
+    {
+        $this->writeSettingsFile('
+## Database settings
+$wgDBtype           = "mysql";
+$wgDBserver         = "localhost";
+$wgDBname           = "my_wiki";
+$wgDBuser           = "root";
+$wgDBpassword       = "";');
+
+        $settings = new MediaWiki2DokuWiki_MediaWiki_Settings($this->testFile);
+
+        $this->assertEquals('mysql', $settings->getSetting('wgDBtype'));
+        $this->assertEquals('localhost', $settings->getSetting('wgDBserver'));
+        $this->assertEquals('my_wiki', $settings->getSetting('wgDBname'));
+        $this->assertEquals('root', $settings->getSetting('wgDBuser'));
+        $this->assertEquals('', $settings->getSetting('wgDBpassword'));
+        $this->assertEquals('', $settings->getSetting('wgDBprefix'));
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testMissingRequiredDbType()
+    {
+        $this->writeSettingsFile('
+## Database settings
+$wgDBserver         = "localhost";
+$wgDBname           = "my_wiki";
+$wgDBuser           = "root";
+$wgDBpassword       = "";
+$wgDBprefix = "foo_"; #foo_');
+
+        $settings = new MediaWiki2DokuWiki_MediaWiki_Settings($this->testFile);
+
+        $this->assertEquals('', $settings->getSetting('wgDBtype'));
+        $this->assertEquals('localhost', $settings->getSetting('wgDBserver'));
+        $this->assertEquals('my_wiki', $settings->getSetting('wgDBname'));
+        $this->assertEquals('root', $settings->getSetting('wgDBuser'));
+        $this->assertEquals('', $settings->getSetting('wgDBpassword'));
+        $this->assertEquals('', $settings->getSetting('wgDBprefix'));
+        $this->assertEquals('foo_', $settings->getSetting('wgDBprefix'));
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testMissingRequiredDbServer()
+    {
+        $this->writeSettingsFile('
+## Database settings
+$wgDBtype           = "mysql";
+$wgDBname           = "my_wiki";
+$wgDBuser           = "root";
+$wgDBpassword       = "";
+$wgDBprefix = "foo_"; #foo_');
+
+        $settings = new MediaWiki2DokuWiki_MediaWiki_Settings($this->testFile);
+
+        $this->assertEquals('mysql', $settings->getSetting('wgDBtype'));
+        $this->assertEquals('', $settings->getSetting('wgDBserver'));
+        $this->assertEquals('my_wiki', $settings->getSetting('wgDBname'));
+        $this->assertEquals('root', $settings->getSetting('wgDBuser'));
+        $this->assertEquals('', $settings->getSetting('wgDBpassword'));
+        $this->assertEquals('', $settings->getSetting('wgDBprefix'));
+        $this->assertEquals('foo_', $settings->getSetting('wgDBprefix'));
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testMissingRequiredDbName()
+    {
+        $this->writeSettingsFile('
+## Database settings
+$wgDBtype           = "mysql";
+$wgDBserver         = "localhost";
+$wgDBuser           = "root";
+$wgDBpassword       = "";
+$wgDBprefix = "foo_"; #foo_');
+
+        $settings = new MediaWiki2DokuWiki_MediaWiki_Settings($this->testFile);
+
+        $this->assertEquals('mysql', $settings->getSetting('wgDBtype'));
+        $this->assertEquals('localhost', $settings->getSetting('wgDBserver'));
+        $this->assertEquals('', $settings->getSetting('wgDBname'));
+        $this->assertEquals('root', $settings->getSetting('wgDBuser'));
+        $this->assertEquals('', $settings->getSetting('wgDBpassword'));
+        $this->assertEquals('', $settings->getSetting('wgDBprefix'));
+        $this->assertEquals('foo_', $settings->getSetting('wgDBprefix'));
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testMissingRequiredDbUser()
+    {
+        $this->writeSettingsFile('
+## Database settings
+$wgDBtype           = "mysql";
+$wgDBserver         = "localhost";
+$wgDBname           = "my_wiki";
+$wgDBpassword       = "";
+$wgDBprefix = "foo_"; #foo_');
+
+        $settings = new MediaWiki2DokuWiki_MediaWiki_Settings($this->testFile);
+
+        $this->assertEquals('mysql', $settings->getSetting('wgDBtype'));
+        $this->assertEquals('localhost', $settings->getSetting('wgDBserver'));
+        $this->assertEquals('my_wiki', $settings->getSetting('wgDBname'));
+        $this->assertEquals('', $settings->getSetting('wgDBuser'));
+        $this->assertEquals('', $settings->getSetting('wgDBpassword'));
+        $this->assertEquals('', $settings->getSetting('wgDBprefix'));
+        $this->assertEquals('foo_', $settings->getSetting('wgDBprefix'));
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testMissingRequiredDbPassword()
+    {
+        $this->writeSettingsFile('
+## Database settings
+$wgDBtype           = "mysql";
+$wgDBserver         = "localhost";
+$wgDBname           = "my_wiki";
+$wgDBuser           = "root";
+$wgDBprefix = "foo_"; #foo_');
+
+        $settings = new MediaWiki2DokuWiki_MediaWiki_Settings($this->testFile);
+
+        $this->assertEquals('mysql', $settings->getSetting('wgDBtype'));
+        $this->assertEquals('localhost', $settings->getSetting('wgDBserver'));
+        $this->assertEquals('my_wiki', $settings->getSetting('wgDBname'));
+        $this->assertEquals('root', $settings->getSetting('wgDBuser'));
+        $this->assertEquals('', $settings->getSetting('wgDBpassword'));
+        $this->assertEquals('', $settings->getSetting('wgDBprefix'));
+        $this->assertEquals('foo_', $settings->getSetting('wgDBprefix'));
+    }
+
+    public function testEmptyDbPrefix()
+    {
+        $this->writeSettingsFile('
+# MySQL specific settings
+$wgDBprefix         = "";');
+
+        $settings = new MediaWiki2DokuWiki_MediaWiki_Settings($this->testFile);
+
+        $this->assertEquals('', $settings->getSetting('wgDBprefix'));
+    }
 }
 

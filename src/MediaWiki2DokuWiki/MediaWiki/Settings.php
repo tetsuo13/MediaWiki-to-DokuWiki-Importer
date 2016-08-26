@@ -31,9 +31,24 @@
 class MediaWiki2DokuWiki_MediaWiki_Settings
 {
     /**
-     * Configuration settings.
+     * @var array<string, string> Configuration settings.
      */
     private $settings = array();
+
+    /**
+     * @var array<string, string> Keys that will be imported and their default
+     *                            values. A null value indicates that the key
+     *                            is expected to be found in the MediaWiki
+     *                            settings.
+     */
+    private $keys = array(
+        'wgDBtype' => null,
+        'wgDBserver' => null,
+        'wgDBname' => null,
+        'wgDBuser' => null,
+        'wgDBpassword' => null,
+        'wgDBprefix' => ''
+    );
 
     /**
      * Constructor.
@@ -92,17 +107,10 @@ class MediaWiki2DokuWiki_MediaWiki_Settings
      */
     private function startsWithKey($line)
     {
-        $needles = array(
-            '$wgDBtype',
-            '$wgDBserver',
-            '$wgDBname',
-            '$wgDBuser',
-            '$wgDBpassword',
-            '$wgDBprefix'
-        );
+        foreach (array_keys($this->keys) as $needle) {
+            $variableName = '$' . $needle;
 
-        foreach ($needles as $needle) {
-            if (!strncmp($line, $needle, strlen($needle))) {
+            if (!strncmp($line, $variableName, strlen($variableName))) {
                 return true;
             }
         }
@@ -220,8 +228,10 @@ class MediaWiki2DokuWiki_MediaWiki_Settings
     {
         if (isset($this->settings[$key])) {
             return $this->settings[$key];
+        } else if (isset($this->keys[$key]) && $this->keys[$key] !== null) {
+            return $this->keys[$key];
         }
-        throw new Exception("MediaWiki key $key does not exist");
+        throw new Exception("MediaWiki key $key does not exist and is required");
     }
 }
 
