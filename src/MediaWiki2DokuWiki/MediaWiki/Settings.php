@@ -182,13 +182,18 @@ class MediaWiki2DokuWiki_MediaWiki_Settings
      */
     private function generateDsn()
     {
+        // MediaWiki allows 'postgres' as db type.
+        if ($this->settings['wgDBtype'] == 'postgres') {
+            $this->settings['wgDBtype'] = 'pgsql';
+        }
+        
         $dsn = array(
             $this->settings['wgDBtype'] . ':dbname=' . $this->settings['wgDBname']
         );
-
+        
         $mysqlSocket = ini_get('mysql.default_socket');
 
-        if (!empty($mysqlSocket)) {
+        if ($this->settings['wgDBtype'] == 'mysql' && !empty($mysqlSocket)) {
             $dsn[] = 'unix_socket=' . $mysqlSocket;
         } else {
             $dsn[] = 'host=' . $this->settings['wgDBserver'];
