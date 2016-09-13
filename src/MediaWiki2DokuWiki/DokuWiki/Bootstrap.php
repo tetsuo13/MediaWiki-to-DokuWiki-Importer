@@ -56,10 +56,10 @@ class MediaWiki2DokuWiki_DokuWiki_Bootstrap
         $files = array('init.php', 'common.php');
 
         foreach ($files as $file) {
-            require DOKU_INC . "inc/$file";
+            require_once DOKU_INC . "inc/$file";
         }
 
-        require DOKU_CONF . 'dokuwiki.php';
+        require_once DOKU_CONF . 'dokuwiki.php';
         $this->conf = $conf;
 
         $this->setupLanguage($lang);
