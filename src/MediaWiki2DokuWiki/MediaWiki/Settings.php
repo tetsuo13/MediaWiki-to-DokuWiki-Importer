@@ -186,6 +186,10 @@ class MediaWiki2DokuWiki_MediaWiki_Settings
         if ($this->settings['wgDBtype'] == 'postgres') {
             $this->settings['wgDBtype'] = 'pgsql';
         }
+        // MediaWiki allows 'mysqli' as db type.
+        if ($this->settings['wgDBtype'] == 'mysqli') {
+            $this->settings['wgDBtype'] = 'mysql';
+        }
         
         $dsn = array(
             $this->settings['wgDBtype'] . ':dbname=' . $this->settings['wgDBname']
