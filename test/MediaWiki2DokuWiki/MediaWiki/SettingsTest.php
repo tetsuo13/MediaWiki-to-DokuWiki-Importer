@@ -22,6 +22,8 @@
  * @link      https://github.com/tetsuo13/MediaWiki-to-DokuWiki-Importer
  */
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * {@link MediaWiki2DokuWiki_MediaWiki_Settings} unit tests.
  *
@@ -31,11 +33,11 @@
  * @author Andrei Nicholson
  * @since  2013-08-13
  */
-class MediaWiki2DokuWiki_MediaWiki_SettingsTest extends MediaWiki2DokuWiki_MediaWiki_TestCase
+class MediaWiki2DokuWiki_MediaWiki_SettingsTest extends TestCase
 {
     private $testFile = '';
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->testFile = tempnam(sys_get_temp_dir(), __FILE__);
     }
@@ -50,7 +52,7 @@ $contents
         }
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         if ($this->testFile !== false) {
             unlink($this->testFile);

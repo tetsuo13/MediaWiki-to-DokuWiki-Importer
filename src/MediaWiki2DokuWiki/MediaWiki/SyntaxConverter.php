@@ -425,13 +425,11 @@ class MediaWiki2DokuWiki_MediaWiki_SyntaxConverter
 
         // Insert a unique string to the replacement so that it won't be
         // caught in a search later.
-        // @todo A lambda function can be used when PHP 5.4 is required.
         array_walk(
             $patterns,
-            create_function(
-                '&$v, $k',
-                '$v = "' . $this->placeholder . '" . $v;'
-            )
+            function (&$item, $key) {
+                $item = $this->placeholder . $item;
+            }
         );
 
         $convertedRecord = preg_replace(

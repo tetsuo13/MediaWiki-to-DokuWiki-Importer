@@ -1,7 +1,7 @@
 MediaWiki2DokuWiki
 ==================
 
-[![Build Status](https://api.travis-ci.org/tetsuo13/MediaWiki-to-DokuWiki-Importer.svg)](https://travis-ci.org/tetsuo13/MediaWiki-to-DokuWiki-Importer)
+![Continuous integration](https://github.com/tetsuo13/MediaWiki-to-DokuWiki-Importer/workflows/Continuous%20integration/badge.svg)
 
 Import MediaWiki into DokuWiki. Will also translate from MediaWiki syntax to
 DokuWiki as best as it can (not all modifiers from MediaWiki are available in
@@ -18,7 +18,7 @@ Requirements
 
 * Physical access to the MediaWiki and DokuWiki installation on server.
 * Read access to MediaWiki's LocalSettings.php script.
-* PHP 5.1.0 or greater.
+* PHP 5.4 or greater.
 * PDO extension with MySQL/PostgreSQL binding -- whatever DB type MediaWiki is
 using.
 

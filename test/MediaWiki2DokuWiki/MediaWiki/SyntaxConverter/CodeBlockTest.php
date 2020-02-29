@@ -22,7 +22,7 @@
  * @link      https://github.com/tetsuo13/MediaWiki-to-DokuWiki-Importer
  */
 
-class MediaWiki2DokuWiki_MediaWiki_SyntaxConverter_CodeBlockTest extends MediaWiki2DokuWiki_MediaWiki_TestCase
+class MediaWiki2DokuWiki_MediaWiki_SyntaxConverter_CodeBlockTest extends MediaWiki2DokuWiki_MediaWiki_SyntaxConverter_TestCase
 {
     public function testItalicsOutsideOfPre()
     {

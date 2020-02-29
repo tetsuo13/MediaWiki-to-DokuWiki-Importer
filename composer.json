@@ -4,12 +4,12 @@
     "description": "Convert content in a MediaWiki installation to DokuWiki",
     "keywords": ["mediawiki", "dokuwiki", "wiki", "migrate", "convert"],
     "homepage": "https://github.com/tetsuo13/MediaWiki-to-DokuWiki-Importer",
-    "license": "GPL-3.0",
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "Andrei Nicholson",
             "email": "contact@andreinicholson.com",
-            "homepage": "http://andreinicholson.com",
+            "homepage": "https://andreinicholson.com",
             "role": "Developer"
         }
     ],
@@ -19,16 +19,21 @@
         "source": "https://github.com/tetsuo13/MediaWiki-to-DokuWiki-Importer"
     },
     "require": {
-        "php": ">=5.1.0",
+        "php": ">=5.4",
         "mediawiki/core": ">=1.16"
     },
     "require-dev": {
-        "php": ">=5.2.1",
-        "phpunit/phpunit": "3.6.*"
+        "phpunit/phpunit": "^8"
     },
     "autoload": {
         "psr-0": {
             "MediaWiki2DokuWiki_": "src/"
-        }
+        },
+        "classmap": [
+            "src/"
+        ]
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }

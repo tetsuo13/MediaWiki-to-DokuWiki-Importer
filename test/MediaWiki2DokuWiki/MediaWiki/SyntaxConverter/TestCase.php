@@ -22,10 +22,12 @@
  * @link      https://github.com/tetsuo13/MediaWiki-to-DokuWiki-Importer
  */
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Base unit test class helper.
  */
-abstract class MediaWiki2DokuWiki_MediaWiki_TestCase extends PHPUnit_Framework_TestCase
+abstract class MediaWiki2DokuWiki_MediaWiki_SyntaxConverter_TestCase extends TestCase
 {
     /**
      * Convert MediaWiki block of text to DokuWiki syntax.

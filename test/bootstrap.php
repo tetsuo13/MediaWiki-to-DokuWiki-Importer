@@ -26,5 +26,5 @@ error_reporting(-1);
 ini_set('display_errors', 1);
 
 require_once dirname(__FILE__) . '/../src/MediaWiki2DokuWiki/autoload.php';
-require_once dirname(__FILE__) . '/MediaWiki2DokuWiki/MediaWiki/TestCase.php';
+require_once dirname(__FILE__) . '/MediaWiki2DokuWiki/MediaWiki/SyntaxConverter/TestCase.php';
 
