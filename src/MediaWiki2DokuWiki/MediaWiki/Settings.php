@@ -152,7 +152,7 @@ class MediaWiki2DokuWiki_MediaWiki_Settings
         $settingsParsed = array();
 
         foreach ($settings as $line) {
-            if ($line{0} != '$') {
+            if ($line[0] != '$') {
                 continue;
             }
 
