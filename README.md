@@ -1,5 +1,4 @@
-MediaWiki2DokuWiki
-==================
+# MediaWiki2DokuWiki
 
 ![Continuous integration](https://github.com/tetsuo13/MediaWiki-to-DokuWiki-Importer/workflows/Continuous%20integration/badge.svg)
 
@@ -12,9 +11,11 @@ Tested against:
 * MediaWiki 1.17.1 and DokuWiki 2012-01-25 "Angua".
 * MediaWiki 1.16.1 and DokuWiki 2011-05-25a "Rincewind"
 
+**This project is not under active development or maintenance.**
 
-Requirements
-------------
+Try the [yamdwe](https://github.com/projectgus/yamdwe) project if you encounter serious issues during migration.
+
+## Requirements
 
 * Physical access to the MediaWiki and DokuWiki installation on server.
 * Read access to MediaWiki's LocalSettings.php script.
@@ -22,8 +23,7 @@ Requirements
 * PDO extension with MySQL/PostgreSQL binding -- whatever DB type MediaWiki is
 using.
 
-Usage
------
+## Usage
 
 Can be run either through a web server or from the command line, if you have
 SSH access to the server. For large MediaWiki installations the command line
